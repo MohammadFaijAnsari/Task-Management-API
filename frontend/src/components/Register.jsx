@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { API } from "../api/api";
 function Register() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -15,7 +16,7 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:5000/api/register", {
+      const res = await fetch(`${API}/api/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -30,14 +31,14 @@ function Register() {
 
       const data = await res.json();
       if (res.ok) {
-        toast.success("User registered successfully ✅");
+        toast.success("User registered successfully ");
         navigate('/login');
       } else {
-        alert(data.message || "Something went wrong ❌");
+        alert(data.message || "Something went wrong ");
       }
     } catch (error) {
       console.error(error);
-      alert("Error while registering user ❌");
+      alert("Error while registering user ");
     }
   };
 

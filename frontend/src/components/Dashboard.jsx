@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { API } from "../api/api";
 
 function Dashboard() {
   const [tasks, setTasks] = useState([]);
@@ -9,7 +10,7 @@ function Dashboard() {
   }, []);
 
   const fetchTasks = () => {
-    fetch("http://localhost:5000/api/latest-tasks")
+    fetch(`${API}/api/latest-tasks`)
       .then((res) => res.json())
       .then((data) => setTasks(data))
       .catch((err) => console.error("Error fetching tasks:", err));
@@ -17,7 +18,7 @@ function Dashboard() {
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this task?")) {
-      fetch(`http://localhost:5000/api/tasks/${id}`, {
+      fetch(`${API}/api/tasks/${id}`, {
         method: "DELETE",
       })
         .then((res) => res.json())

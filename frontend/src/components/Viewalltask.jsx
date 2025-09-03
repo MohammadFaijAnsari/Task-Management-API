@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API } from "../api/api";
 
 function ViewAllTask() {
   const navigate = useNavigate();
@@ -9,7 +10,7 @@ function ViewAllTask() {
   }, []);
   const fetchTasks = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/tasks");
+      const res = await fetch(`${API}/api/tasks`);
       const data = await res.json();
       setTasks(data);
     } catch (error) {
@@ -19,7 +20,7 @@ function ViewAllTask() {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this task?")) {
       try {
-        const res = await fetch(`http://localhost:5000/api/tasks/${id}`, {
+        const res = await fetch(`${API}/api/tasks/${id}`, {
           method: "DELETE",
         });
         const data = await res.json();

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate,Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { API } from "../api/api";
+
 function AddTask() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -14,7 +16,7 @@ function AddTask() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:5000/api/add-task", {
+      const res = await fetch(`${API}/api/add-task`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { API } from "../api/api";
+
 
 function Home() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  
+  
   // Fetch tasks from backend API
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/tasks"); 
+        const res = await fetch(`${API}/api/tasks`); 
         if (!res.ok) {
           throw new Error("Failed to fetch tasks");
         }

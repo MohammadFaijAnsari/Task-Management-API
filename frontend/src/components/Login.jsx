@@ -1,7 +1,8 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authcontext";
-import toast from "react-hot-toast"; // ✅ import toast
+import toast from "react-hot-toast"; 
+import { API } from "../api/api";
 
 function Login() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:5000/api/login", {
+      const res = await fetch(`${API}/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -25,14 +26,14 @@ function Login() {
       const data = await res.json();
       if (res.ok) {
         login(data.user);
-        toast.success("✅ Login successful"); // ✅ Success toast
+        toast.success(" Login successful"); 
         navigate(data.redirect);
       } else {
-        toast.error(`❌ ${data.message}`); // ✅ Error toast
+        toast.error(` ${data.message}`); 
       }
     } catch (err) {
       console.error("Login error:", err);
-      toast.error("❌ Something went wrong"); // ✅ Error toast
+      toast.error(" Something went wrong"); 
     }
   };
 
