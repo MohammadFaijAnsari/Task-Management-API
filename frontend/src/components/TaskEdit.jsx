@@ -5,7 +5,7 @@ import { API } from "../api/api";
 function TaskEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [task, setTask] = useState({ title: "", desc: "", status: "pending" });
+  const [task, setTask] = useState({ title: "", desc: "", status: "Pending" });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,6 +39,9 @@ function TaskEdit() {
       })
       .catch((err) => console.error("Error updating task:", err));
   };
+
+  if (loading) return <p className="text-center mt-10">Loading...</p>;
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
       <form
@@ -71,6 +74,21 @@ function TaskEdit() {
             required
           />
         </div>
+
+        {/* Status Dropdown */}
+        <div className="mb-4">
+          <label className="block text-gray-600 mb-2">Status</label>
+          <select
+            name="status"
+            value={task.status}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-lg"
+          >
+            <option value="Pending">Pending</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+
         <button
           type="submit"
           className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-lg"

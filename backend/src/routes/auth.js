@@ -4,10 +4,10 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User.js");
 const Task=require('../models/Task.js');
 const verifyToken = require("../middleware/authMiddleware.js");
-
 const router = express.Router();
 const JWT_SECRET = "faij1234";
 
+// Resgister Route
 router.post("/register", async (req, res) => {
   try {
     const { name, email, role, password } = req.body;
@@ -15,7 +15,6 @@ router.post("/register", async (req, res) => {
     if (!name || !email || !role || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
-
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ message: " Email already exists" });
@@ -51,7 +50,7 @@ router.post("/register", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
+// Login Route
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -166,7 +165,34 @@ router.delete("/tasks/:id", async (req, res) => {
     res.status(500).json({ message: "Error deleting task" });
   }
 });
+// Update Route
+router.put("/tasks/:id", async (req, res) => {
+  const { id } = req.params;
+  const { title, desc, status } = req.body;
 
+  try {
+    const task = await Task.findByPk(id);
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    // validate status
+    if (status && !["Pending", "Completed"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
+    task.title = title || task.title;
+    task.desc = desc || task.desc;
+    task.status = status || task.status;
+
+    await task.save();
+
+    res.json({ message: "Task updated successfully", task });
+  } catch (err) {
+    console.error("Error updating task:", err);
+    res.status(500).json({ message: "Error updating task" });
+  }
+});
 // Get single task by ID
 router.get("/tasks/:id", async (req, res) => {
   try {
