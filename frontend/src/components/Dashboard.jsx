@@ -69,14 +69,14 @@ function Dashboard() {
             <div className="bg-white rounded-xl shadow p-6 text-center">
               <h3 className="text-lg font-semibold text-green-600">Completed</h3>
               <p className="text-3xl font-bold mt-2">
-                {tasks.filter((t) => t.status === "completed").length}
+                {tasks.filter((t) => t.status === "Completed").length}
               </p>
             </div>
 
             <div className="bg-white rounded-xl shadow p-6 text-center">
               <h3 className="text-lg font-semibold text-red-600">Pending</h3>
               <p className="text-3xl font-bold mt-2">
-                {tasks.filter((t) => t.status === "pending").length}
+                {tasks.filter((t) => t.status === "Pending").length}
               </p>
             </div>
           </div>
@@ -94,6 +94,7 @@ function Dashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-300">
+                
                 {tasks.map((task,index) => (
                   <tr key={task.id} className="hover:bg-gray-600 hover:text-white">
 
@@ -101,7 +102,7 @@ function Dashboard() {
                     <td className="px-4 py-3">{task.title}</td>
                     <td className="px-4 py-3">{task.desc}</td>
                     <td
-                      className={`px-4 py-3 ${task.status === "completed"
+                      className={`px-4 py-3 ${task.status === "Completed"
                         ? "text-green-600"
                         : "text-red-500"
                         } me-1` }

@@ -27,7 +27,6 @@ function TaskEdit() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     fetch(`${API}/api/tasks/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },

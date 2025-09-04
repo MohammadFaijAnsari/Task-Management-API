@@ -52,15 +52,24 @@ function ViewAllTask() {
               <th className="px-4 py-3">ID</th>
               <th className="px-4 py-3">Title</th>
               <th className="px-4 py-3">Description</th>
+              <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3 text-center">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-700 text-center">
-            {tasks.map((task,index) => (
+            {tasks.map((task, index) => (
               <tr key={task.id} className="text-black hover:bg-gray-700 hover:text-white">
-                <td className="px-4 py-3">{index+1}</td>
+                <td className="px-4 py-3">{index + 1}</td>
                 <td className="px-4 py-3">{task.title}</td>
                 <td className="px-4 py-3">{task.desc}</td>
+                <td
+                  className={`px-4 py-3 ${task.status === "Completed"
+                    ? "text-green-600"
+                    : "text-red-500"
+                    } me-1`}
+                >
+                  {task.status}
+                </td>
                 <td className="px-4 py-3 flex justify-center gap-3">
                   <button
                     onClick={() => navigate(`/edit-task/${task.id}`)}
