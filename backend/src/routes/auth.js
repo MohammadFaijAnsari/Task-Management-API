@@ -212,10 +212,7 @@ router.get("/tasks/:id", async (req, res) => {
 router.put("/tasks/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    // console.log(id);
-    
     const { status } = req.body;
-    // console.log(req.body);
     const task = await Task.findByPk(id);
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
@@ -234,7 +231,6 @@ router.put("/tasks/:id", async (req, res) => {
 router.put("/tasks/:id", async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
-
   try {
     const task = await Task.findByPk(id);
     if (!task) {
