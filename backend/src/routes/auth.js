@@ -250,7 +250,35 @@ router.put("/tasks/:id", async (req, res) => {
   }
 });
 
-
+// Update Profile Route
+router.put("/update-profile/:id", verifyToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email, password, role } = req.body;
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    let updatedData = { name, email, role };
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 8);
+      updatedData.password = hashedPassword;
+    }
+    await user.update(updatedData);
+    res.json({
+      message: "Profile updated successfully",
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error("Update profile error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 
 module.exports = router;

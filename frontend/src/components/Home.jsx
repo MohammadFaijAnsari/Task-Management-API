@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from "react";
-import {CheckCircle,XCircle} from "lucide-react";
+import React, { useEffect, useState, useContext } from "react";
+import { CheckCircle, XCircle } from "lucide-react";
 import { API } from "../api/api";
+import { AuthContext } from "../context/authcontext";
+
 function Home() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const { user } = useContext(AuthContext); // 👈 User info from context
+
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -21,6 +26,7 @@ function Home() {
     };
     fetchTasks();
   }, []);
+
   const handleStatusChange = async (taskId, newStatus) => {
     try {
       const res = await fetch(`${API}/api/tasks/${taskId}`, {
@@ -44,6 +50,14 @@ function Home() {
 
   return (
     <div className="min-h-screen text-white p-6 rounded-xl">
+      <div className="mb-8 p-6 bg-gray-800 rounded-xl shadow-md">
+        <h2 className="text-2xl font-bold text-amber-400 mb-2">
+          Welcome, {user?.name || "Guest"}
+        </h2>
+        <p className="text-gray-300">
+          <span className="font-semibold">Role:</span> {user?.role}
+        </p>
+      </div>
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-3xl text-amber-400">All Tasks</h2>
       </div>
@@ -56,7 +70,7 @@ function Home() {
               <th className="px-4 py-3">Title</th>
               <th className="px-4 py-3">Description</th>
               <th className="px-4 py-3">Task Status</th>
-              <th className="px-4  py-3">Status Icon</th>
+              <th className="px-4 py-3">Status Icon</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-700 text-black bg-white/90">
@@ -79,17 +93,17 @@ function Home() {
                     </select>
                   </td>
                   <td className="text-center px-4 py-3">
-                    {task.status==="Completed" ? (
-                        <CheckCircle className="text-green-500 w-6 h-6 mx-auto" />
-                    ):(
-                         <XCircle className="text-red-500 w-6 h-6 mx-auto" />
+                    {task.status === "Completed" ? (
+                      <CheckCircle className="text-green-500 w-6 h-6 mx-auto" />
+                    ) : (
+                      <XCircle className="text-red-500 w-6 h-6 mx-auto" />
                     )}
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="4" className="px-4 py-6 text-gray-500">
+                <td colSpan="5" className="px-4 py-6 text-gray-500">
                   No tasks available
                 </td>
               </tr>

@@ -12,6 +12,7 @@ import Viewalltask from "./components/Viewalltask.jsx";
 import AdminRoute from "./components/AdminRoute.jsx";
 import UserRoute from "./components/UserRoute.jsx";
 import TaskEdit from "./components/TaskEdit.jsx";
+import UpdateProfile from "./components/UpdateProfile.jsx";
 function App() {
   return (
     <Router>
@@ -24,6 +25,7 @@ function App() {
           <Route path="/add-task" element={<AdminRoute><Addtask /></AdminRoute>} />
           <Route path="/viewalltask" element={<AdminRoute><Viewalltask /></AdminRoute>} />
           <Route path="/userprofile" element={<AdminRoute><Profile /></AdminRoute>} />
+          <Route path="/update-profile" element={<AdminRoute><UpdateProfile /></AdminRoute>} />
           <Route path="/edit-task/:id" element={<TaskEdit><Profile /></TaskEdit>} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

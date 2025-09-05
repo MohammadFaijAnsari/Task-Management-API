@@ -3,11 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authcontext";
 import toast from "react-hot-toast"; 
 import { API } from "../api/api";
-
+import { Eye, EyeOff } from "lucide-react"; 
 function Login() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const { login } = useContext(AuthContext);
+
+  const [showPassword, setShowPassword] = useState(false); 
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -26,21 +28,23 @@ function Login() {
       const data = await res.json();
       if (res.ok) {
         login(data.user);
-        toast.success(" Login successful"); 
+        toast.success("Login successful"); 
         navigate(data.redirect);
       } else {
-        toast.error(` ${data.message}`); 
+        toast.error(data.message || "Login failed"); 
       }
     } catch (err) {
       console.error("Login error:", err);
-      toast.error(" Something went wrong"); 
+      toast.error("Something went wrong"); 
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-sm p-8 bg-white rounded-2xl shadow-md">
-        <h2 className="text-2xl font-bold text-center mb-6 text-gray-700">Login</h2>
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-700">
+          Login
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-gray-600 text-sm mb-2">Email</label>
@@ -56,16 +60,26 @@ function Login() {
           </div>
           <div>
             <label className="block text-gray-600 text-sm mb-2">Password</label>
-            <input
-              type="password"
-              name="password"
-              placeholder="Enter your password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none pr-10"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
+
           <button
             type="submit"
             className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
@@ -76,7 +90,9 @@ function Login() {
 
         <p className="text-sm text-center mt-4 text-gray-600">
           Don’t have an account?{" "}
-          <Link to="/register" className="text-blue-500 hover:underline">Register here</Link>
+          <Link to="/register" className="text-blue-500 hover:underline">
+            Register here
+          </Link>
         </p>
       </div>
     </div>

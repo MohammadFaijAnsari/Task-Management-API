@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { API } from "../api/api";
+import { ListTodo, CheckCircle2, Clock, User, Edit } from "lucide-react"; 
+import { AuthContext } from "../context/authcontext";
 
 function Dashboard() {
   const [tasks, setTasks] = useState([]);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     fetchTasks();
@@ -30,17 +33,15 @@ function Dashboard() {
     }
   };
 
-  // 👉 Handle Status Update
   const handleStatusChange = (id, newStatus) => {
     fetch(`${API}/api/tasks/${id}`, {
-      method: "PUT", // ya PATCH (aapke backend pe depend karta hai)
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status: newStatus }),
     })
       .then((res) => res.json())
       .then((data) => {
         alert(data.message);
-        // Local state update
         setTasks(
           tasks.map((task) =>
             task.id === id ? { ...task, status: newStatus } : task
@@ -51,9 +52,10 @@ function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100 ">
+    <div className="min-h-screen flex flex-col bg-gray-100">
       <div className="flex flex-col md:flex-row flex-1 rounded-xl">
-        <aside className="w-full md:w-64 bg-gray-900 text-white p-6  mb-6 md:mb-0">
+        {/* Sidebar */}
+        <aside className="w-full md:w-64 bg-gray-900 text-white p-6 mb-6 md:mb-0">
           <h2 className="text-lg font-semibold mb-6">Menu</h2>
           <ul className="space-y-4">
             <li>
@@ -72,28 +74,50 @@ function Dashboard() {
               </Link>
             </li>
           </ul>
+
+          {/* User Info + Edit Profile */}
+          {user && (
+            <div className="mt-8 bg-gray-800 rounded-lg p-4 text-center relative">
+              <User className="w-12 h-12 text-indigo-400 mx-auto mb-2" />
+              <h3 className="text-lg font-semibold">{user.name}</h3>
+              <p className="text-sm text-gray-300">{user.email}</p>
+              <span className="text-xs font-bold text-indigo-400 mt-1 inline-block">
+                {user.role}
+              </span>
+
+              {/* Edit Profile Button */}
+              <Link
+                to="/update-profile"
+                className="absolute top-2 right-2 text-indigo-400 hover:text-indigo-200"
+              >
+                <Edit size={20} />
+              </Link>
+            </div>
+          )}
         </aside>
 
+        {/* Main Content */}
         <main className="flex-1 p-6">
           <h2 className="text-2xl font-bold text-gray-700 mb-6">
             Dashboard Overview
           </h2>
-
-          {/* Stats Cards */}
+          
+          {/* Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-xl shadow p-6 text-center">
+            <div className="bg-white rounded-xl shadow p-6 text-center flex flex-col items-center">
+              <ListTodo className="w-10 h-10 text-indigo-600 mb-2" />
               <h3 className="text-lg font-semibold text-indigo-600">Total Tasks</h3>
               <p className="text-3xl font-bold mt-2">{tasks.length}</p>
             </div>
-
-            <div className="bg-white rounded-xl shadow p-6 text-center">
+            <div className="bg-white rounded-xl shadow p-6 text-center flex flex-col items-center">
+              <CheckCircle2 className="w-10 h-10 text-green-600 mb-2" />
               <h3 className="text-lg font-semibold text-green-600">Completed</h3>
               <p className="text-3xl font-bold mt-2">
                 {tasks.filter((t) => t.status === "Completed").length}
               </p>
             </div>
-
-            <div className="bg-white rounded-xl shadow p-6 text-center">
+            <div className="bg-white rounded-xl shadow p-6 text-center flex flex-col items-center">
+              <Clock className="w-10 h-10 text-red-600 mb-2" />
               <h3 className="text-lg font-semibold text-red-600">Pending</h3>
               <p className="text-3xl font-bold mt-2">
                 {tasks.filter((t) => t.status === "Pending").length}
@@ -101,10 +125,10 @@ function Dashboard() {
             </div>
           </div>
 
-          {/* Table */}
+          {/* Recent Tasks */}
           <div className="mt-10 overflow-x-auto">
             <h3 className="text-xl font-semibold mb-4">Recent Tasks</h3>
-            <table className="w-full border border-gray-300  overflow-hidden text-center">
+            <table className="w-full border border-gray-300 overflow-hidden text-center">
               <thead className="text-white bg-black">
                 <tr>
                   <th className="px-4 py-3">ID</th>
@@ -120,8 +144,6 @@ function Dashboard() {
                     <td className="px-4 py-3">{index + 1}</td>
                     <td className="px-4 py-3">{task.title}</td>
                     <td className="px-4 py-3">{task.desc}</td>
-
-                    {/* 👇 Dropdown for Status */}
                     <td className="px-4 py-3">
                       <select
                         value={task.status}
@@ -136,7 +158,6 @@ function Dashboard() {
                         <option value="Completed">Completed</option>
                       </select>
                     </td>
-
                     <td>
                       <Link
                         to={`/edit-task/${task.id}`}
@@ -145,7 +166,6 @@ function Dashboard() {
                         Edit
                       </Link>
                     </td>
-
                     <td>
                       <button
                         onClick={() => handleDelete(task.id)}
@@ -156,7 +176,6 @@ function Dashboard() {
                     </td>
                   </tr>
                 ))}
-
                 {tasks.length === 0 && (
                   <tr>
                     <td colSpan="6" className="py-4 text-gray-500">
