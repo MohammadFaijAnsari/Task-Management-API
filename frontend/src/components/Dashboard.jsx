@@ -30,6 +30,26 @@ function Dashboard() {
     }
   };
 
+  // 👉 Handle Status Update
+  const handleStatusChange = (id, newStatus) => {
+    fetch(`${API}/api/tasks/${id}`, {
+      method: "PUT", // ya PATCH (aapke backend pe depend karta hai)
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: newStatus }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        alert(data.message);
+        // Local state update
+        setTasks(
+          tasks.map((task) =>
+            task.id === id ? { ...task, status: newStatus } : task
+          )
+        );
+      })
+      .catch((err) => console.error("Error updating status:", err));
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-100 ">
       <div className="flex flex-col md:flex-row flex-1 rounded-xl">
@@ -46,7 +66,6 @@ function Dashboard() {
                 View Tasks
               </Link>
             </li>
-            
             <li>
               <Link to="/userprofile" className="hover:text-indigo-400 block">
                 Profile
@@ -60,6 +79,7 @@ function Dashboard() {
             Dashboard Overview
           </h2>
 
+          {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             <div className="bg-white rounded-xl shadow p-6 text-center">
               <h3 className="text-lg font-semibold text-indigo-600">Total Tasks</h3>
@@ -81,6 +101,7 @@ function Dashboard() {
             </div>
           </div>
 
+          {/* Table */}
           <div className="mt-10 overflow-x-auto">
             <h3 className="text-xl font-semibold mb-4">Recent Tasks</h3>
             <table className="w-full border border-gray-300  overflow-hidden text-center">
@@ -94,23 +115,29 @@ function Dashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-300">
-                
-                {tasks.map((task,index) => (
+                {tasks.map((task, index) => (
                   <tr key={task.id} className="hover:bg-gray-600 hover:text-white">
-
-                    <td className="px-4 py-3">{index + 1  }</td>
+                    <td className="px-4 py-3">{index + 1}</td>
                     <td className="px-4 py-3">{task.title}</td>
                     <td className="px-4 py-3">{task.desc}</td>
-                    <td
-                      className={`px-4 py-3 ${task.status === "Completed"
-                        ? "text-green-600"
-                        : "text-red-500"
-                        } me-1` }
-                    >
-                      {task.status}
+
+                    {/* 👇 Dropdown for Status */}
+                    <td className="px-4 py-3">
+                      <select
+                        value={task.status}
+                        onChange={(e) => handleStatusChange(task.id, e.target.value)}
+                        className={`px-2 py-1 rounded border ${
+                          task.status === "Completed"
+                            ? "text-green-600 border-green-400"
+                            : "text-red-600 border-red-400"
+                        }`}
+                      >
+                        <option value="Pending">Pending</option>
+                        <option value="Completed">Completed</option>
+                      </select>
                     </td>
-                    
-                    <td className="">
+
+                    <td>
                       <Link
                         to={`/edit-task/${task.id}`}
                         className="w-full sm:w-auto mb-1 sm:mb-0 bg-amber-300 px-3 py-1 rounded block sm:inline-block text-center"
@@ -119,7 +146,7 @@ function Dashboard() {
                       </Link>
                     </td>
 
-                    <td className="">
+                    <td>
                       <button
                         onClick={() => handleDelete(task.id)}
                         className="w-full sm:w-auto bg-red-500 px-3 py-1 rounded text-white block sm:inline-block"
@@ -132,7 +159,7 @@ function Dashboard() {
 
                 {tasks.length === 0 && (
                   <tr>
-                    <td colSpan="5" className="py-4 text-gray-500">
+                    <td colSpan="6" className="py-4 text-gray-500">
                       No tasks found
                     </td>
                   </tr>

@@ -33,6 +33,24 @@ function ViewAllTask() {
       }
     }
   };
+  const handleStatusChange = (id, newStatus) => {
+    fetch(`${API}/api/tasks/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: newStatus }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        alert(data.message);
+        // Local state update
+        setTasks(
+          tasks.map((task) =>
+            task.id === id ? { ...task, status: newStatus } : task
+          )
+        );
+      })
+      .catch((err) => console.error("Error updating status:", err));
+  };
 
   return (
     <div className="min-h-screen p-8 text-white rounded-xl">
@@ -62,13 +80,18 @@ function ViewAllTask() {
                 <td className="px-4 py-3">{index + 1}</td>
                 <td className="px-4 py-3">{task.title}</td>
                 <td className="px-4 py-3">{task.desc}</td>
-                <td
-                  className={`px-4 py-3 ${task.status === "Completed"
-                    ? "text-green-600"
-                    : "text-red-500"
-                    } me-1`}
-                >
-                  {task.status}
+                <td className="px-4 py-3">
+                  <select
+                    value={task.status}
+                    onChange={(e) => handleStatusChange(task.id, e.target.value)}
+                    className={`px-2 py-1 rounded border ${task.status === "Completed"
+                        ? "text-green-600 border-green-400"
+                        : "text-red-600 border-red-400"
+                      }`}
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+                  </select>
                 </td>
                 <td className="px-4 py-3 flex justify-center gap-3">
                   <button
