@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import {CheckCircle,XCircle} from "lucide-react";
 import { API } from "../api/api";
 function Home() {
   const [tasks, setTasks] = useState([]);
@@ -55,6 +56,7 @@ function Home() {
               <th className="px-4 py-3">Title</th>
               <th className="px-4 py-3">Description</th>
               <th className="px-4 py-3">Task Status</th>
+              <th className="px-4  py-3">Status Icon</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-700 text-black bg-white/90">
@@ -75,6 +77,13 @@ function Home() {
                       <option value="Pending">Pending</option>
                       <option value="Completed">Completed</option>
                     </select>
+                  </td>
+                  <td className="text-center px-4 py-3">
+                    {task.status==="Completed" ? (
+                        <CheckCircle className="text-green-500 w-6 h-6 mx-auto" />
+                    ):(
+                         <XCircle className="text-red-500 w-6 h-6 mx-auto" />
+                    )}
                   </td>
                 </tr>
               ))
