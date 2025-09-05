@@ -10,7 +10,7 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/me", {
+        const res = await fetch("https://task-management-api-backend.onrender.com/api/me", {
           method: "GET",
           credentials: "include"
         });
@@ -43,7 +43,7 @@ const AuthProvider = ({ children }) => {
 
   const logout = async () => {
   try {
-    await fetch("http://localhost:5000/api/logout", {
+    await fetch("https://task-management-api-backend.onrender.com/api/logout", {
       method: "POST",
       credentials: "include"
     });
